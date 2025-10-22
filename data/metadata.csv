@@ -1,0 +1,9 @@
+Grupo,Local,Solo,Latitude,Longitude,ID,Barcode
+Grupo 1,Jardim Botânico do Porto,Solo Floresta 1,41.1526594,8.643145,SF1,barcode01
+Grupo 2,Jardim Botânico do Porto,Solo Floresta 2,41.15237137,8.642309925,SF2,barcode02
+Grupo 3,Jardim Botânico do Porto,Solo Floresta 3,41.1529573,8.6430176,SF3,barcode03
+Grupo 4,Jardim Botânico do Porto,Solo Jardim 1,41.1533832,8.6434551,SJ1,barcode04
+Grupo 5,Jardim Botânico do Porto,Solo Jardim 2,41.1530657,8.642427,SJ2,barcode05
+Grupo 6,Jardim Botânico do Porto,Solo Jardim 3,41.1531,8.6428,SJ3,barcode06
+Grupo 7,Jardim Botânico do Porto,Solo Jardim 4,41.15364,8.64211,SJ4,barcode07
+Mock Community,NA,Mock Community,NA,NA,M1,barcode08
