@@ -1,8 +1,40 @@
-## Introdução
+# Introdução
 
-## Passos da aula prática
+Este protocolo tem como objetivo ilustrar os passos principais para uma
+análise geral dos microbiomas obtidos com a tecnologia de sequenciação
+minION.
+
+**Objetivos**
+
+1.  Perceber como se podem processar as raw reads.
+2.  Discutir os resultados de sequenciação.
+3.  Aplicar uma análise ecológica simples.
+4.  Discutir os resultados ecológicos.
+5.  Discutir a qualidade dos resultados.
 
 ## Processamento de *raw reads* (upstream)
+
+O processamento de raw reads pode ser feito com o protocolo ws-16 da
+epi2me, que foi construído para este tipo de dados. Para o efeito, basta
+usar um único comando com o software **nextflow**.
+
+Link para
+workflow:<https://epi2me.nanoporetech.com/epi2me-docs/workflows/wf-16s/>
+
+Notas:
+
+-   Não vamos correr este comando na aula, porque o processo de
+    instalação varia entre sistemas operativos e pode ser demorado.
+
+-   Na pasta **nextflow_reports** vão encontrar os resultados para as
+    vossas amostras.
+
+-   Na pasta **fastq_pass/barcodes** vão encontrar os resultados de
+    sequenciação.
+
+**Opção standard**
+
+Para processar as raw reads com parâmetros *default*:
 
 ``` bash
 sudo nextflow run epi2me-labs/wf-16s \
@@ -10,6 +42,13 @@ sudo nextflow run epi2me-labs/wf-16s \
       --minimap2_by_reference   \ 
       -profile standard
 ```
+
+**Questão:** Que parâmetros podemos alternar e testar?
+
+**Opção final**
+
+Vamos cortar as reads que têm tamanhos fora do esperado e diminuir o
+threshold mínimo de identidade.
 
 ``` bash
 sudo nextflow run epi2me-labs/wf-16s \
@@ -24,10 +63,22 @@ sudo nextflow run epi2me-labs/wf-16s \
 
 # Análise dos microbiomas
 
-### Preparar a sessão de R
+Para a análise *downstream* dos microbiomas, vamos usar a linguagem de
+programação R e o RStudio.
+
+Instalar R: <https://www.r-project.org/>
+
+Instalar Rstudio: <https://posit.co/download/rstudio-desktop/>
+
+# Preparar a sessão de R
+
+Por uma questão de organização, devem criar um projeto no RStudio na
+mesma pasta onde estão a realizar este trabalho.
+
+**Pacotes necessários**
 
 ``` r
-library(dplyr)
+library(dplyr) 
 ```
 
     ## 
@@ -50,7 +101,18 @@ library(vegan)
 
     ## Loading required package: permute
 
+``` r
+# se for preciso instalar:
+#install.packages("NameOfPackage")
+```
+
 ## Importação de dados
+
+O primeiro passo em análise de dados é a importação e verificação dos
+dados. Neste caso, os dados são a tabela com a abundância dos
+microorganismos identificados e a tabela com os metadados, ou seja, a
+informação sobre as amostras. Os metadados são importantes para
+conseguirmos interpretar os resultados.
 
 ``` r
 # Importar metadados
@@ -128,6 +190,8 @@ barcodes <- metadata_clean$Barcode
 
 ## Análise exploratória inicial
 
+Vamos começar por analisar a variação da profundidade de sequenciação.
+
 ``` r
 # calcular o número total de reads
 total_reads <- data.frame(Total = colSums(abundance[,2:8]),
@@ -189,10 +253,17 @@ total_rarefied %>%
 
 ![](sgm_6_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
+Nota: para as próximas análises vamos usar os dados **sem** rarefação.
+
 ## Organização das tabelas
 
-1.  Transformar as tabelas de abundância para formato longo (em vez de
-    *wide*).
+Para ser mais fácil realizar as análises seguintes, vamos formatar os
+dados de uma maneira mais adequada.De seguida, vamos unir as diferentes
+fontes de informação, ou seja, a tabela de abundância e taxonomia com a
+tabela de metadados.
+
+1.  Mais especificamente, transformar as tabelas de abundância para
+    formato longo (em vez de *wide*).
 
 Nota: tabela em formato longo implica que cada variável corresponde a
 uma coluna.
@@ -222,7 +293,18 @@ View(full_table)
 
 # Análise de diversidade
 
+A análise de diversidade vai consistir no seguinte:
+
+1.  Diversidade alpha
+2.  Diversidade beta
+3.  Taxonomia
+
 ## Limpeza dos dados
+
+Nesta fase, temos as tabelas prontas a seres usadas. No entanto, ainda
+podemos aplicar mais passos de limpeza para otimizar as análises.
+Geralmente, estes passos dependem do desenho experimental, métodos, etc.
+Neste caso concreto, podemos ser mais exigentes com a taxonomia.
 
 Passos a aplicar:
 
@@ -238,6 +320,11 @@ full_table <- full_table %>%
 ```
 
 ## Diversidade Alpha
+
+Vamos comparar a diversidade entre amostras através de duas métricas:
+
+1.  Riqueza de espécies
+2.  Shannon
 
 ``` r
 # Calcular métricas de diversidade
@@ -336,7 +423,7 @@ diversity_long %>%
 Não temos amostras suficientes para fazer tratamento estatístico. No
 entanto, tipicamente, poderíamos comparar métricas de centralidade:
 
-\*\*Questão:\* Que métricas poderíamos adicionar?
+**Questão:** Que métricas poderíamos adicionar?
 
 ``` r
 diversity %>% 
@@ -395,7 +482,7 @@ diversity_long %>%
 
 ## Diversidade beta
 
-Como é que a composição diferente entre tipos de solo?
+Como é que a composição difere entre tipos de solo?
 
 Para aplicar diversidade beta precisamos de transformar a tabela numa
 matriz com taxa nas colunas.
@@ -414,6 +501,11 @@ nova_matriz <- full_table %>%
 rownames(nova_matriz) <- metadata_clean$ID[1:6]
 ```
 
+Uma vez com os dados prontos, podemos construir a matriz de distância
+com o método **Bray-Curtis** e realizar a análise multivariada com
+non-metric multidimensional scaling (nMDS), seguido da ordenação para
+visualização.
+
 ``` r
 # Calcular nMDS
 nMDS <- metaMDS(nova_matriz)
@@ -422,48 +514,47 @@ nMDS <- metaMDS(nova_matriz)
     ## Square root transformation
     ## Wisconsin double standardization
     ## Run 0 stress 4.13728e-05 
-    ## Run 1 stress 9.008507e-05 
-    ## ... Procrustes: rmse 0.2120163  max resid 0.3863208 
-    ## Run 2 stress 9.693244e-05 
-    ## ... Procrustes: rmse 0.09628391  max resid 0.1398047 
-    ## Run 3 stress 8.710744e-05 
-    ## ... Procrustes: rmse 0.1944556  max resid 0.4119628 
-    ## Run 4 stress 6.157028e-05 
-    ## ... Procrustes: rmse 0.1984654  max resid 0.4136094 
-    ## Run 5 stress 8.101836e-05 
-    ## ... Procrustes: rmse 0.2033209  max resid 0.4166799 
-    ## Run 6 stress 5.304613e-05 
-    ## ... Procrustes: rmse 0.07930939  max resid 0.1105596 
-    ## Run 7 stress 7.580816e-10 
+    ## Run 1 stress 9.128182e-05 
+    ## ... Procrustes: rmse 0.2010186  max resid 0.4204232 
+    ## Run 2 stress 4.516423e-05 
+    ## ... Procrustes: rmse 0.2453478  max resid 0.4495474 
+    ## Run 3 stress 8.067882e-05 
+    ## ... Procrustes: rmse 0.1901989  max resid 0.3604925 
+    ## Run 4 stress 8.218755e-05 
+    ## ... Procrustes: rmse 0.02555673  max resid 0.03575582 
+    ## Run 5 stress 9.66508e-05 
+    ## ... Procrustes: rmse 0.2729253  max resid 0.5022904 
+    ## Run 6 stress 8.942676e-05 
+    ## ... Procrustes: rmse 0.2244003  max resid 0.4489148 
+    ## Run 7 stress 6.95959e-06 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.2509624  max resid 0.4593361 
-    ## Run 8 stress 1.140484e-07 
-    ## ... Procrustes: rmse 0.1259372  max resid 0.2204397 
-    ## Run 9 stress 7.719949e-05 
-    ## ... Procrustes: rmse 0.2277728  max resid 0.3517653 
-    ## Run 10 stress 9.666273e-05 
-    ## ... Procrustes: rmse 0.1932646  max resid 0.3303671 
-    ## Run 11 stress 8.508586e-05 
-    ## ... Procrustes: rmse 0.2192031  max resid 0.3226927 
-    ## Run 12 stress 6.988098e-05 
-    ## ... Procrustes: rmse 0.0991771  max resid 0.1706441 
-    ## Run 13 stress 6.386263e-05 
-    ## ... Procrustes: rmse 0.1285951  max resid 0.179111 
-    ## Run 14 stress 7.908264e-05 
-    ## ... Procrustes: rmse 0.009699637  max resid 0.0165707 
-    ## Run 15 stress 8.425641e-05 
-    ## ... Procrustes: rmse 0.1689869  max resid 0.2825178 
-    ## Run 16 stress 9.584386e-05 
-    ## ... Procrustes: rmse 0.03214834  max resid 0.05496599 
-    ## Run 17 stress 1.46192e-14 
-    ## ... New best solution
-    ## ... Procrustes: rmse 0.02681557  max resid 0.0454393 
-    ## Run 18 stress 9.580701e-05 
-    ## ... Procrustes: rmse 0.008637982  max resid 0.01388537 
-    ## Run 19 stress 9.437977e-05 
-    ## ... Procrustes: rmse 0.00866827  max resid 0.01390515 
-    ## Run 20 stress 9.627586e-05 
-    ## ... Procrustes: rmse 0.01470313  max resid 0.02640263 
+    ## ... Procrustes: rmse 0.1664667  max resid 0.2793276 
+    ## Run 8 stress 8.977716e-05 
+    ## ... Procrustes: rmse 0.1390292  max resid 0.2438616 
+    ## Run 9 stress 3.078871e-05 
+    ## ... Procrustes: rmse 0.08545277  max resid 0.1518276 
+    ## Run 10 stress 3.93032e-05 
+    ## ... Procrustes: rmse 0.0447407  max resid 0.05546103 
+    ## Run 11 stress 9.158611e-05 
+    ## ... Procrustes: rmse 0.172679  max resid 0.3329735 
+    ## Run 12 stress 8.826582e-05 
+    ## ... Procrustes: rmse 0.08574533  max resid 0.1604192 
+    ## Run 13 stress 9.484057e-05 
+    ## ... Procrustes: rmse 0.1151131  max resid 0.223781 
+    ## Run 14 stress 9.976292e-05 
+    ## ... Procrustes: rmse 0.08142544  max resid 0.1037044 
+    ## Run 15 stress 3.355164e-05 
+    ## ... Procrustes: rmse 0.1018951  max resid 0.1856744 
+    ## Run 16 stress 4.878477e-05 
+    ## ... Procrustes: rmse 0.125582  max resid 0.2174882 
+    ## Run 17 stress 3.870281e-05 
+    ## ... Procrustes: rmse 0.1950512  max resid 0.333894 
+    ## Run 18 stress 9.906246e-05 
+    ## ... Procrustes: rmse 0.1390046  max resid 0.243519 
+    ## Run 19 stress 9.635809e-05 
+    ## ... Procrustes: rmse 0.1818369  max resid 0.3457872 
+    ## Run 20 stress 1.340627e-05 
+    ## ... Procrustes: rmse 0.008705149  max resid 0.0135992 
     ## *** Best solution was not repeated -- monoMDS stopping criteria:
     ##     20: stress < smin
 
@@ -475,6 +566,9 @@ nMDS <- metaMDS(nova_matriz)
 nMDS_meta <- metadata_clean %>% 
   filter(ID != "M1") %>% 
   mutate(Solo_cor = ifelse(Solo == "Floresta", "#d8b365", "#5ab4ac"))
+# Informação para legenda
+legenda <- data.frame(Solo = c("Floresta", "Jardim"),
+                      Cor = c("#d8b365", "#5ab4ac"))
 ```
 
 ``` r
@@ -488,6 +582,10 @@ points(nMDS,
        pch = 21,
        col = "grey", 
        cex = 1.5)
+with(legenda, 
+     legend("bottomright", legend = Solo, bty = "n",
+            col = Cor, pch = 19, cex = 1,
+            title = "Tipo de solo"))
 ```
 
 ![](sgm_6_files/figure-markdown_github/unnamed-chunk-25-1.png)
@@ -499,12 +597,12 @@ nMDS$points
 ```
 
     ##           MDS1          MDS2
-    ## SF1 -0.1176028 -4.949552e-03
-    ## SF2 -0.1173391 -3.494059e-03
-    ## SF3 -0.1173391 -3.494059e-03
-    ## SJ1  0.5801546 -5.499767e-05
-    ## SJ3 -0.1189326  6.371314e-03
-    ## SJ4 -0.1089411  5.621354e-03
+    ## SF1 -0.1151766 -0.1524328066
+    ## SF2 -0.1266004 -0.0411996184
+    ## SF3 -0.1266016 -0.0411829102
+    ## SJ1  0.7025901  0.0008024588
+    ## SJ3 -0.2345936  0.0388094375
+    ## SJ4 -0.0996179  0.1952034389
     ## attr(,"centre")
     ## [1] TRUE
     ## attr(,"pc")
@@ -512,7 +610,7 @@ nMDS$points
     ## attr(,"halfchange")
     ## [1] TRUE
     ## attr(,"internalscaling")
-    ## [1] 3.853376
+    ## [1] 2.992188
 
 As amostras SF2 e SF3 obtiveram resultados praticamente iguais em termos
 de composição da comunidade.
@@ -531,9 +629,7 @@ Opções adicionais:
 plot(nMDS$points,
      type = "p",
      xlab = "nMDS1",
-     ylab = "nMDS2", 
-     xlim = c(-0.3, 0.8),
-     ylim = c(-0.1, 0.15))
+     ylab = "nMDS2")
 points(nMDS,
        bg = nMDS_meta$Solo_cor,
        pch = 21,
@@ -541,14 +637,20 @@ points(nMDS,
        cex = 1.5)
 with(nMDS_meta,
      ordiellipse(nMDS, Solo))
+with(legenda, 
+     legend("bottomright", legend = Solo, bty = "n",
+            col = Cor, pch = 19, cex = 1,
+            title = "Tipo de solo"))
 ```
-
-    ## Warning in chol.default(cov, pivot = TRUE): the matrix is either rank-deficient
-    ## or not positive definite
 
 ![](sgm_6_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 ## Análise taxonómica
+
+Para a parte da taxonomia, precisamos de voltar a trabalhar nos dados
+para ser mais fácil analisar os diferentes níveis taxonómicos. Para o
+efeito, vamos separar a coluna de taxonomia em várias colunas, uma para
+cada nível.
 
 ``` r
 # Processamento adicional
@@ -564,6 +666,11 @@ full_table_taxa <- full_table %>%
 # Cores adicionais
 cores <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 ```
+
+Geralmente, analisamos do grupo mais geral para o mais específico. No
+entanto, níveis muito gerais tendem a ser pouco informativos.
+
+**Nivel Super Kingdom**
 
 ``` r
 # Nível de super Kingdom
@@ -581,10 +688,13 @@ full_table_taxa %>%
 
 ![](sgm_6_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
+**Nível do filo**
+
 Para analisar níveis taxonómicos mais baixos, precisamos de selecionar
 os grupos principais primeiro.
 
 ``` r
+# Identificar os cinco filos mais abundantes
 top5_phyla <- full_table_taxa %>% 
   group_by(Phylum) %>% 
   summarise(total = sum(Abundance)) %>% 
@@ -642,7 +752,12 @@ full_table_taxa %>%
 
 ![](sgm_6_files/figure-markdown_github/unnamed-chunk-32-1.png)
 
-## Análise das mock communities
+# Análise das mock communities
+
+Como temos comunidades de composição conhecida, é possível avaliar se o
+protocolo efetuado correu bem e a qualidade dos resultados.
+
+Como sempre, começamos por importar os dados
 
 ``` r
 # Importar dados dos isolados na mock community
@@ -715,15 +830,13 @@ seq_genus
     ##  9 Serratia        
     ## 10 Yersinia
 
-### Como poderemos calcular a accuracy? (Bónus - opcional)
+## Como poderemos calcular a accuracy? (Bónus - opcional)
 
 Para esse feito, teremos de contar quantas classificações foram: - TP
 (True Positive); - TN (True Negative); – não se vai aplicar - FP (False
 Positive); - FN (False Negative).
 
 Se quisermos calcular accuracy:
-
-$$Accuracy = \frac{TP + TN}{TP + TN + FP + FN}$$
 
 <figure>
 <img src="fig_1.png" alt="Figura 1" />
@@ -778,3 +891,5 @@ accuracy
     ## [1] 0.4444444
 
 **Bónus:** Qual foi o valor de precision e recall?
+
+#FIM

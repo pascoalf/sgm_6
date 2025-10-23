@@ -1,5 +1,5 @@
 ---
-title: "Aula_6"
+title: "SGM aula 6 - prática"
 output: 
   md_document:
     variant: markdown_github
@@ -37,7 +37,10 @@ e pode ser demorado.
 
 - Na pasta **fastq_pass/barcodes** vão encontrar os resultados de sequenciação.
 
-Para processar as raw reads com parâmetros default:
+
+**Opção standard**
+
+Para processar as raw reads com parâmetros *default*:
 
 ```{bash, eval = FALSE}
 sudo nextflow run epi2me-labs/wf-16s \
@@ -46,6 +49,13 @@ sudo nextflow run epi2me-labs/wf-16s \
       -profile standard
 ```
 
+**Questão:** Que parâmetros podemos alternar e testar?
+
+
+**Opção final**
+
+Vamos cortar as reads que têm tamanhos fora do esperado e diminuir o threshold mínimo
+de identidade.
 
 ```{bash, eval = FALSE}
 sudo nextflow run epi2me-labs/wf-16s \
@@ -61,18 +71,36 @@ sudo nextflow run epi2me-labs/wf-16s \
 
 # Análise dos microbiomas
 
-### Preparar a sessão de R
+Para a análise *downstream* dos microbiomas, vamos usar a linguagem de programação R 
+e o RStudio.
+
+Instalar R: https://www.r-project.org/
+
+Instalar Rstudio: https://posit.co/download/rstudio-desktop/
+
+# Preparar a sessão de R
+
+Por uma questão de organização, devem criar um projeto no RStudio na mesma pasta onde
+estão a realizar este trabalho.
+
+**Pacotes necessários**
 
 ```{r}
-library(dplyr)
+library(dplyr) 
 library(tidyr)
 library(stringr)
 library(ggplot2)
 library(vegan)
+# se for preciso instalar:
+#install.packages("NameOfPackage")
 ```
 
-
 ## Importação de dados
+
+O primeiro passo em análise de dados é a importação e verificação dos dados. Neste caso,
+os dados são a tabela com a abundância dos microorganismos identificados e a tabela com
+os metadados, ou seja, a informação sobre as amostras. Os metadados são importantes para 
+conseguirmos interpretar os resultados.
 
 ```{r}
 # Importar metadados
@@ -131,6 +159,7 @@ barcodes <- metadata_clean$Barcode
 
 ## Análise exploratória inicial
 
+Vamos começar por analisar a variação da profundidade de sequenciação.
 
 ```{r}
 # calcular o número total de reads
@@ -145,7 +174,6 @@ total_reads %>%
 ```
 
 **Questão:** Justifica-se aplicar rarefação?
-
 
 ```{r}
 # Possíveis valores para rarefação
@@ -172,8 +200,8 @@ abundance_rarefied <- rrarefy(abundance_matrix, sample = 3700)
 View(abundance_rarefied)
 ```
 
-
 Podemos verificar o que acontece depois da rarefação:
+
 ```{r}
 # calcular total
 total_rarefied <- data.frame(Total = rowSums(abundance_rarefied),
@@ -186,16 +214,19 @@ total_rarefied %>%
   labs(title = "Número de reads depois de aplicar rarefação")
 ```
 
+Nota: para as próximas análises vamos usar os dados **sem** rarefação.
 
 ## Organização das tabelas
 
-1. Transformar as tabelas de abundância para formato longo (em vez de *wide*).
+Para ser mais fácil realizar as análises seguintes, vamos formatar os dados de uma maneira mais 
+adequada.De seguida, vamos unir as diferentes fontes de informação, ou seja, a tabela de abundância e taxonomia
+com a tabela de metadados.
+
+1. Mais especificamente, transformar as tabelas de abundância para formato longo (em vez de *wide*).
 
 Nota: tabela em formato longo implica que cada variável corresponde a uma coluna.
 
-
 ```{r}
-
 #
 abundance_long <- abundance %>% 
   pivot_longer(cols = all_of(barcodes), 
@@ -220,7 +251,18 @@ View(full_table)
 
 # Análise de diversidade
 
+A análise de diversidade vai consistir no seguinte:
+
+1. Diversidade alpha
+2. Diversidade beta
+3. Taxonomia
+
 ## Limpeza dos dados
+
+Nesta fase, temos as tabelas prontas a seres usadas. No entanto, ainda podemos aplicar
+mais passos de limpeza para otimizar as análises. Geralmente, estes passos dependem
+do desenho experimental, métodos, etc. Neste caso concreto, podemos ser mais exigentes 
+com a taxonomia.
 
 Passos a aplicar:
 
@@ -235,8 +277,12 @@ full_table <- full_table %>%
   filter(!str_detect(tax, "Unclassified")) # Remover não classificados
 ```
 
-
 ## Diversidade Alpha
+
+Vamos comparar a diversidade entre amostras através de duas métricas:
+
+1. Riqueza de espécies
+2. Shannon
 
 ```{r}
 # Calcular métricas de diversidade
@@ -298,7 +344,6 @@ diversity %>%
 
 ### Extra - como juntar as duas métricas num só gráfico?
 
-
 ```{r}
 # transformar em formato longo (1 coluna por variável)
 diversity_long <- diversity %>% 
@@ -313,13 +358,11 @@ diversity_long %>%
   facet_wrap(~Metric, scales = "free_y")
 ```
 
-
-
 ## Qual foi o solo mais diverso?
 
 Não temos amostras suficientes para fazer tratamento estatístico. No entanto, tipicamente, poderíamos comparar métricas de centralidade:
 
-**Questão:* Que métricas poderíamos adicionar?
+**Questão:** Que métricas poderíamos adicionar?
 
 ```{r}
 diversity %>% 
@@ -338,7 +381,6 @@ diversity %>%
 ### Análises adicionais
 
 Como é que a diversidade varia em termos de coordenadas?
-
 
 ```{r}
 # Latitude
@@ -363,13 +405,11 @@ diversity_long %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-
 ## Diversidade beta
 
-Como é que a composição diferente entre tipos de solo?
+Como é que a composição difere entre tipos de solo?
 
 Para aplicar diversidade beta precisamos de transformar a tabela numa matriz com taxa nas colunas.
-
 
 ```{r}
 # Obter matrix nova
@@ -386,6 +426,7 @@ rownames(nova_matriz) <- metadata_clean$ID[1:6]
 
 ```
 
+Uma vez com os dados prontos, podemos construir a matriz de distância com o método **Bray-Curtis** e realizar a análise multivariada com non-metric multidimensional scaling (nMDS), seguido da ordenação para visualização.
 
 ```{r}
 # Calcular nMDS
@@ -395,6 +436,9 @@ nMDS <- metaMDS(nova_matriz)
 nMDS_meta <- metadata_clean %>% 
   filter(ID != "M1") %>% 
   mutate(Solo_cor = ifelse(Solo == "Floresta", "#d8b365", "#5ab4ac"))
+# Informação para legenda
+legenda <- data.frame(Solo = c("Floresta", "Jardim"),
+                      Cor = c("#d8b365", "#5ab4ac"))
 ```
 
 
@@ -409,6 +453,10 @@ points(nMDS,
        pch = 21,
        col = "grey", 
        cex = 1.5)
+with(legenda, 
+     legend("bottomright", legend = Solo, bty = "n",
+            col = Cor, pch = 19, cex = 1,
+            title = "Tipo de solo"))
 ```
 
 **Questão:** Desapareceu um ponto?
@@ -431,9 +479,7 @@ Opções adicionais:
 plot(nMDS$points,
      type = "p",
      xlab = "nMDS1",
-     ylab = "nMDS2", 
-     xlim = c(-0.3, 0.8),
-     ylim = c(-0.1, 0.15))
+     ylab = "nMDS2")
 points(nMDS,
        bg = nMDS_meta$Solo_cor,
        pch = 21,
@@ -441,10 +487,18 @@ points(nMDS,
        cex = 1.5)
 with(nMDS_meta,
      ordiellipse(nMDS, Solo))
+with(legenda, 
+     legend("bottomright", legend = Solo, bty = "n",
+            col = Cor, pch = 19, cex = 1,
+            title = "Tipo de solo"))
 ```
+
 
 ## Análise taxonómica
 
+Para a parte da taxonomia, precisamos de voltar a trabalhar nos dados para ser mais fácil 
+analisar os diferentes níveis taxonómicos. Para o efeito, vamos separar a coluna de taxonomia em
+várias colunas, uma para cada nível.
 
 ```{r}
 # Processamento adicional
@@ -461,7 +515,10 @@ full_table_taxa <- full_table %>%
 cores <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 ```
 
+Geralmente, analisamos do grupo mais geral para o mais específico. No entanto, níveis muito
+gerais tendem a ser pouco informativos.
 
+**Nivel Super Kingdom**
 
 ```{r}
 # Nível de super Kingdom
@@ -477,10 +534,12 @@ full_table_taxa %>%
   facet_wrap(~Solo, scale = "free_x")
 ```
 
+**Nível do filo**
 
 Para analisar níveis taxonómicos mais baixos, precisamos de selecionar os grupos principais primeiro.
 
 ```{r}
+# Identificar os cinco filos mais abundantes
 top5_phyla <- full_table_taxa %>% 
   group_by(Phylum) %>% 
   summarise(total = sum(Abundance)) %>% 
@@ -488,7 +547,6 @@ top5_phyla <- full_table_taxa %>%
   pull(Phylum)
 top5_phyla <- top5_phyla[1:5]
 ```
-
 
 
 ```{r}
@@ -508,7 +566,6 @@ full_table_taxa %>%
   facet_wrap(~Solo, scale = "free_x") + 
   theme(legend.position = "top")
 ```
-
 
 **Questão:** Será que a níveis mais baixos há diferenças?
 
@@ -538,15 +595,17 @@ full_table_taxa %>%
 ```
 
 
-## Análise das mock communities
+# Análise das mock communities
 
+Como temos comunidades de composição conhecida, é possível avaliar se o protocolo efetuado 
+correu bem e a qualidade dos resultados.
 
+Como sempre, começamos por importar os dados
 
 ```{r}
 # Importar dados dos isolados na mock community
 mc <- read.csv("./data/mock_community.csv", header = TRUE)
 ```
-
 Vamos começar por comparar os filos esperados vs os que encontrámos:
 
 ```{r}
@@ -568,7 +627,6 @@ check_phylum
 
 Os filos encontrados foram os esperados, mas e ao nível do género?
 
-
 ```{r}
 # Nível do género
 mc_genus <- data.frame(Genus = unique(mc$Género))
@@ -583,8 +641,7 @@ seq_genus <- full_table_taxa %>%
 seq_genus
 ```
 
-
-### Como poderemos calcular a accuracy? (Bónus - opcional)
+## Como poderemos calcular a accuracy? (Bónus - opcional)
 
 Para esse feito, teremos de contar quantas classificações foram:
   - TP (True Positive);
@@ -593,8 +650,6 @@ Para esse feito, teremos de contar quantas classificações foram:
   - FN (False Negative).
   
 Se quisermos calcular accuracy:
-
-$$Accuracy = \frac{TP + TN}{TP + TN + FP + FN}$$
 
 ![Figura 1](fig_1.png)
 
@@ -620,3 +675,5 @@ accuracy
 
 **Bónus:** Qual foi o valor de precision e recall?
 
+
+#FIM
