@@ -6,16 +6,38 @@ output:
 
 ---
 
-## Introdução
+# Introdução
 
+Este protocolo tem como objetivo ilustrar os passos principais para uma análise geral 
+dos microbiomas obtidos com a tecnologia de sequenciação minION.
 
-## Passos da aula prática
+**Objetivos**
 
+1. Perceber como se podem processar as raw reads.
+2. Discutir os resultados de sequenciação.
+3. Aplicar uma análise ecológica simples.
+4. Discutir os resultados ecológicos.
+5. Discutir a qualidade dos resultados.
 
 
 ## Processamento de *raw reads* (upstream)
 
+O processamento de raw reads pode ser feito com o protocolo ws-16 da epi2me, que foi
+construído para este tipo de dados. Para o efeito, basta usar um único comando com 
+o software **nextflow**.
 
+Link para workflow:https://epi2me.nanoporetech.com/epi2me-docs/workflows/wf-16s/ 
+
+Notas: 
+
+- Não vamos correr este comando na aula, porque o processo de instalação varia entre sistemas operativos 
+e pode ser demorado. 
+
+- Na pasta **nextflow_reports** vão encontrar os resultados para as vossas amostras.
+
+- Na pasta **fastq_pass/barcodes** vão encontrar os resultados de sequenciação.
+
+Para processar as raw reads com parâmetros default:
 
 ```{bash, eval = FALSE}
 sudo nextflow run epi2me-labs/wf-16s \
