@@ -514,47 +514,48 @@ nMDS <- metaMDS(nova_matriz)
     ## Square root transformation
     ## Wisconsin double standardization
     ## Run 0 stress 4.13728e-05 
-    ## Run 1 stress 9.128182e-05 
-    ## ... Procrustes: rmse 0.2010186  max resid 0.4204232 
-    ## Run 2 stress 4.516423e-05 
-    ## ... Procrustes: rmse 0.2453478  max resid 0.4495474 
-    ## Run 3 stress 8.067882e-05 
-    ## ... Procrustes: rmse 0.1901989  max resid 0.3604925 
-    ## Run 4 stress 8.218755e-05 
-    ## ... Procrustes: rmse 0.02555673  max resid 0.03575582 
-    ## Run 5 stress 9.66508e-05 
-    ## ... Procrustes: rmse 0.2729253  max resid 0.5022904 
-    ## Run 6 stress 8.942676e-05 
-    ## ... Procrustes: rmse 0.2244003  max resid 0.4489148 
-    ## Run 7 stress 6.95959e-06 
+    ## Run 1 stress 7.792355e-05 
+    ## ... Procrustes: rmse 0.2609111  max resid 0.4810808 
+    ## Run 2 stress 8.467838e-05 
+    ## ... Procrustes: rmse 0.2237641  max resid 0.4536209 
+    ## Run 3 stress 7.455552e-05 
+    ## ... Procrustes: rmse 0.09994344  max resid 0.12487 
+    ## Run 4 stress 9.60531e-05 
+    ## ... Procrustes: rmse 0.2029334  max resid 0.4180155 
+    ## Run 5 stress 9.246433e-05 
+    ## ... Procrustes: rmse 0.2308413  max resid 0.4560496 
+    ## Run 6 stress 1.161177e-05 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.1664667  max resid 0.2793276 
-    ## Run 8 stress 8.977716e-05 
-    ## ... Procrustes: rmse 0.1390292  max resid 0.2438616 
-    ## Run 9 stress 3.078871e-05 
-    ## ... Procrustes: rmse 0.08545277  max resid 0.1518276 
-    ## Run 10 stress 3.93032e-05 
-    ## ... Procrustes: rmse 0.0447407  max resid 0.05546103 
-    ## Run 11 stress 9.158611e-05 
-    ## ... Procrustes: rmse 0.172679  max resid 0.3329735 
-    ## Run 12 stress 8.826582e-05 
-    ## ... Procrustes: rmse 0.08574533  max resid 0.1604192 
-    ## Run 13 stress 9.484057e-05 
-    ## ... Procrustes: rmse 0.1151131  max resid 0.223781 
-    ## Run 14 stress 9.976292e-05 
-    ## ... Procrustes: rmse 0.08142544  max resid 0.1037044 
-    ## Run 15 stress 3.355164e-05 
-    ## ... Procrustes: rmse 0.1018951  max resid 0.1856744 
-    ## Run 16 stress 4.878477e-05 
-    ## ... Procrustes: rmse 0.125582  max resid 0.2174882 
-    ## Run 17 stress 3.870281e-05 
-    ## ... Procrustes: rmse 0.1950512  max resid 0.333894 
-    ## Run 18 stress 9.906246e-05 
-    ## ... Procrustes: rmse 0.1390046  max resid 0.243519 
-    ## Run 19 stress 9.635809e-05 
-    ## ... Procrustes: rmse 0.1818369  max resid 0.3457872 
-    ## Run 20 stress 1.340627e-05 
-    ## ... Procrustes: rmse 0.008705149  max resid 0.0135992 
+    ## ... Procrustes: rmse 0.08032206  max resid 0.1315138 
+    ## Run 7 stress 0 
+    ## ... New best solution
+    ## ... Procrustes: rmse 0.1018502  max resid 0.2100494 
+    ## Run 8 stress 4.56584e-05 
+    ## ... Procrustes: rmse 0.1642582  max resid 0.2998489 
+    ## Run 9 stress 8.181737e-05 
+    ## ... Procrustes: rmse 0.07423409  max resid 0.1295417 
+    ## Run 10 stress 1.615977e-06 
+    ## ... Procrustes: rmse 0.2016702  max resid 0.380239 
+    ## Run 11 stress 5.627255e-05 
+    ## ... Procrustes: rmse 0.1192616  max resid 0.1800152 
+    ## Run 12 stress 9.625675e-05 
+    ## ... Procrustes: rmse 0.1083928  max resid 0.1761819 
+    ## Run 13 stress 1.061576e-05 
+    ## ... Procrustes: rmse 0.1159532  max resid 0.1922312 
+    ## Run 14 stress 9.244374e-05 
+    ## ... Procrustes: rmse 0.216497  max resid 0.4080098 
+    ## Run 15 stress 7.682814e-05 
+    ## ... Procrustes: rmse 0.1251158  max resid 0.1958773 
+    ## Run 16 stress 4.63153e-05 
+    ## ... Procrustes: rmse 0.1174873  max resid 0.1973034 
+    ## Run 17 stress 9.485527e-05 
+    ## ... Procrustes: rmse 0.08822841  max resid 0.1559866 
+    ## Run 18 stress 7.152949e-05 
+    ## ... Procrustes: rmse 0.08372714  max resid 0.1527429 
+    ## Run 19 stress 9.370475e-05 
+    ## ... Procrustes: rmse 0.1693213  max resid 0.3701862 
+    ## Run 20 stress 8.22077e-05 
+    ## ... Procrustes: rmse 0.1260262  max resid 0.2622662 
     ## *** Best solution was not repeated -- monoMDS stopping criteria:
     ##     20: stress < smin
 
@@ -596,13 +597,13 @@ with(legenda,
 nMDS$points
 ```
 
-    ##           MDS1          MDS2
-    ## SF1 -0.1151766 -0.1524328066
-    ## SF2 -0.1266004 -0.0411996184
-    ## SF3 -0.1266016 -0.0411829102
-    ## SJ1  0.7025901  0.0008024588
-    ## SJ3 -0.2345936  0.0388094375
-    ## SJ4 -0.0996179  0.1952034389
+    ##            MDS1        MDS2
+    ## SF1 -0.16565034 -0.26008496
+    ## SF2 -0.17618030 -0.08719807
+    ## SF3 -0.18642665 -0.08742133
+    ## SJ1  0.73913880 -0.05702096
+    ## SJ3 -0.17400367  0.10547421
+    ## SJ4 -0.03687785  0.38625111
     ## attr(,"centre")
     ## [1] TRUE
     ## attr(,"pc")
@@ -610,7 +611,7 @@ nMDS$points
     ## attr(,"halfchange")
     ## [1] TRUE
     ## attr(,"internalscaling")
-    ## [1] 2.992188
+    ## [1] 2.557032
 
 As amostras SF2 e SF3 obtiveram resultados praticamente iguais em termos
 de composição da comunidade.
@@ -839,8 +840,8 @@ Positive); - FN (False Negative).
 Se quisermos calcular accuracy:
 
 <figure>
-<img src="fig_1.png" alt="Figura 1" />
-<figcaption aria-hidden="true">Figura 1</figcaption>
+<img src="fig_1.png" alt="Observed vs real" />
+<figcaption aria-hidden="true">Observed vs real</figcaption>
 </figure>
 
 ``` r

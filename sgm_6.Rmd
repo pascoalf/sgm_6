@@ -3,7 +3,6 @@ title: "SGM aula 6 - prática"
 output: 
   md_document:
     variant: markdown_github
-
 ---
 
 # Introdução
@@ -651,7 +650,7 @@ Para esse feito, teremos de contar quantas classificações foram:
   
 Se quisermos calcular accuracy:
 
-![Figura 1](fig_1.png)
+![Observed vs real](fig_1.png)
 
 
 ```{r}
