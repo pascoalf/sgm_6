@@ -10,6 +10,13 @@ output:
 Este protocolo tem como objetivo ilustrar os passos principais para uma análise geral 
 dos microbiomas obtidos com a tecnologia de sequenciação minION.
 
+Para ser mais fácil, podes importar diretamente este repositório:
+
+```{bash, eval = FALSE}
+git clone https://github.com/pascoalf/sgm_6
+```
+
+
 **Objetivos**
 
 1. Perceber como se podem processar as raw reads.

@@ -4,6 +4,12 @@ Este protocolo tem como objetivo ilustrar os passos principais para uma
 análise geral dos microbiomas obtidos com a tecnologia de sequenciação
 minION.
 
+Para ser mais fácil, podes importar diretamente este repositório:
+
+``` bash
+git clone https://github.com/pascoalf/sgm_6
+```
+
 **Objetivos**
 
 1.  Perceber como se podem processar as raw reads.
@@ -204,7 +210,7 @@ total_reads %>%
   labs(title = "Número de reads por amostra")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 **Questão:** Justifica-se aplicar rarefação?
 
@@ -219,7 +225,7 @@ total_reads %>%
   geom_hline(yintercept = c(min(total_reads$Total), 4000, 8000), colour = c("red", "black", "black"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ### Opcional – aplicar rarefação dos dados
 
@@ -251,7 +257,7 @@ total_rarefied %>%
   labs(title = "Número de reads depois de aplicar rarefação")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
 Nota: para as próximas análises vamos usar os dados **sem** rarefação.
 
@@ -355,7 +361,7 @@ diversity %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 ``` r
 # Gráfico de colunas - índice de shannon
@@ -370,7 +376,7 @@ diversity %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-16-2.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-17-2.png)
 
 ``` r
 # Gráfico de pontos - riqueza de espécies
@@ -384,7 +390,7 @@ diversity %>%
        x = "Amostra") 
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-18-1.png)
 
 ``` r
 # Gráfico de pontos - índice de shannon
@@ -398,7 +404,7 @@ diversity %>%
        x = "Amostra") 
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 ### Extra - como juntar as duas métricas num só gráfico?
 
@@ -416,7 +422,7 @@ diversity_long %>%
   facet_wrap(~Metric, scales = "free_y")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-20-1.png)
 
 ## Qual foi o solo mais diverso?
 
@@ -457,7 +463,7 @@ diversity_long %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 ``` r
 # Longitude
@@ -468,7 +474,7 @@ diversity_long %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-21-2.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-22-2.png)
 
 ``` r
 diversity_long %>% 
@@ -478,7 +484,7 @@ diversity_long %>%
   scale_fill_manual(values = c("#d8b365", "#5ab4ac"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
 ## Diversidade beta
 
@@ -514,48 +520,49 @@ nMDS <- metaMDS(nova_matriz)
     ## Square root transformation
     ## Wisconsin double standardization
     ## Run 0 stress 4.13728e-05 
-    ## Run 1 stress 9.773071e-05 
-    ## ... Procrustes: rmse 0.1756313  max resid 0.3245173 
-    ## Run 2 stress 9.491653e-05 
-    ## ... Procrustes: rmse 0.2325727  max resid 0.4582365 
-    ## Run 3 stress 2.57562e-05 
+    ## Run 1 stress 9.614308e-05 
+    ## ... Procrustes: rmse 0.129675  max resid 0.2193698 
+    ## Run 2 stress 9.346501e-05 
+    ## ... Procrustes: rmse 0.1052824  max resid 0.1880042 
+    ## Run 3 stress 8.46673e-05 
+    ## ... Procrustes: rmse 0.1188856  max resid 0.2072036 
+    ## Run 4 stress 8.263988e-05 
+    ## ... Procrustes: rmse 0.2257865  max resid 0.4494365 
+    ## Run 5 stress 7.295012e-05 
+    ## ... Procrustes: rmse 0.08200289  max resid 0.1250479 
+    ## Run 6 stress 4.376965e-05 
+    ## ... Procrustes: rmse 0.1210295  max resid 0.2050374 
+    ## Run 7 stress 8.842566e-05 
+    ## ... Procrustes: rmse 0.2601954  max resid 0.483847 
+    ## Run 8 stress 8.438307e-05 
+    ## ... Procrustes: rmse 0.2310765  max resid 0.420476 
+    ## Run 9 stress 1.959397e-05 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.2199355  max resid 0.3929795 
-    ## Run 4 stress 9.409215e-05 
-    ## ... Procrustes: rmse 0.1762327  max resid 0.2246358 
-    ## Run 5 stress 9.735897e-05 
-    ## ... Procrustes: rmse 0.07550196  max resid 0.1291105 
-    ## Run 6 stress 5.430552e-05 
-    ## ... Procrustes: rmse 0.03531628  max resid 0.06644069 
-    ## Run 7 stress 9.633675e-05 
-    ## ... Procrustes: rmse 0.07121694  max resid 0.1206726 
-    ## Run 8 stress 9.331924e-05 
-    ## ... Procrustes: rmse 0.1201983  max resid 0.2085576 
-    ## Run 9 stress 9.821713e-05 
-    ## ... Procrustes: rmse 0.05481908  max resid 0.0851786 
-    ## Run 10 stress 9.111265e-05 
-    ## ... Procrustes: rmse 0.07550907  max resid 0.1294099 
-    ## Run 11 stress 9.020211e-05 
-    ## ... Procrustes: rmse 0.1864812  max resid 0.3326453 
-    ## Run 12 stress 9.998084e-05 
-    ## ... Procrustes: rmse 0.1826739  max resid 0.2683708 
-    ## Run 13 stress 9.266702e-05 
-    ## ... Procrustes: rmse 0.2073573  max resid 0.3456223 
-    ## Run 14 stress 9.908809e-05 
-    ## ... Procrustes: rmse 0.1930841  max resid 0.298936 
-    ## Run 15 stress 9.396399e-05 
-    ## ... Procrustes: rmse 0.07548915  max resid 0.1290573 
-    ## Run 16 stress 1.323824e-05 
+    ## ... Procrustes: rmse 0.1149945  max resid 0.205151 
+    ## Run 10 stress 5.788896e-05 
+    ## ... Procrustes: rmse 0.1316202  max resid 0.242527 
+    ## Run 11 stress 7.650957e-05 
+    ## ... Procrustes: rmse 0.0821454  max resid 0.1393808 
+    ## Run 12 stress 5.02012e-05 
+    ## ... Procrustes: rmse 0.07269506  max resid 0.1067866 
+    ## Run 13 stress 9.684343e-05 
+    ## ... Procrustes: rmse 0.1025775  max resid 0.1876277 
+    ## Run 14 stress 1.13021e-05 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.1237231  max resid 0.2125859 
-    ## Run 17 stress 9.631734e-05 
-    ## ... Procrustes: rmse 0.1408262  max resid 0.2243357 
-    ## Run 18 stress 3.542986e-05 
-    ## ... Procrustes: rmse 0.06475515  max resid 0.1301602 
-    ## Run 19 stress 6.51806e-05 
-    ## ... Procrustes: rmse 0.1857072  max resid 0.2865871 
-    ## Run 20 stress 7.765501e-05 
-    ## ... Procrustes: rmse 0.1370939  max resid 0.2295959 
+    ## ... Procrustes: rmse 0.05421658  max resid 0.0624711 
+    ## Run 15 stress 3.801845e-05 
+    ## ... Procrustes: rmse 0.132394  max resid 0.2607958 
+    ## Run 16 stress 7.471043e-05 
+    ## ... Procrustes: rmse 0.09128986  max resid 0.1361938 
+    ## Run 17 stress 4.793498e-05 
+    ## ... Procrustes: rmse 0.0537432  max resid 0.07293529 
+    ## Run 18 stress 5.664369e-05 
+    ## ... Procrustes: rmse 0.1236245  max resid 0.1884486 
+    ## Run 19 stress 3.799449e-12 
+    ## ... New best solution
+    ## ... Procrustes: rmse 0.1540098  max resid 0.2437375 
+    ## Run 20 stress 9.717976e-05 
+    ## ... Procrustes: rmse 0.1084634  max resid 0.1777298 
     ## *** Best solution was not repeated -- monoMDS stopping criteria:
     ##     20: stress < smin
 
@@ -589,7 +596,7 @@ with(legenda,
             title = "Tipo de solo"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 **Questão:** Desapareceu um ponto?
 
@@ -597,13 +604,13 @@ with(legenda,
 nMDS$points
 ```
 
-    ##            MDS1        MDS2
-    ## SF1 -0.18415212 -0.08499041
-    ## SF2 -0.18507020 -0.04932975
-    ## SF3 -0.18534706 -0.04936849
-    ## SJ1  0.68857311 -0.01248088
-    ## SJ3 -0.17282257  0.15569735
-    ## SJ4  0.03881883  0.04047218
+    ##           MDS1          MDS2
+    ## SF1 -0.1141842 -0.0885387363
+    ## SF2 -0.1189330 -0.0166731944
+    ## SF3 -0.1189330 -0.0166731944
+    ## SJ1  0.6541273  0.0005458862
+    ## SJ3 -0.1909353  0.0118671151
+    ## SJ4 -0.1111419  0.1094721238
     ## attr(,"centre")
     ## [1] TRUE
     ## attr(,"pc")
@@ -611,7 +618,7 @@ nMDS$points
     ## attr(,"halfchange")
     ## [1] TRUE
     ## attr(,"internalscaling")
-    ## [1] 3.047248
+    ## [1] 3.337849
 
 As amostras SF2 e SF3 obtiveram resultados praticamente iguais em termos
 de composição da comunidade.
@@ -638,13 +645,19 @@ points(nMDS,
        cex = 1.5)
 with(nMDS_meta,
      ordiellipse(nMDS, Solo))
+```
+
+    ## Warning in chol.default(cov, pivot = TRUE): the matrix is either rank-deficient
+    ## or not positive definite
+
+``` r
 with(legenda, 
      legend("bottomright", legend = Solo, bty = "n",
             col = Cor, pch = 19, cex = 1,
             title = "Tipo de solo"))
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-27-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 ## Análise taxonómica
 
@@ -687,7 +700,7 @@ full_table_taxa %>%
   facet_wrap(~Solo, scale = "free_x")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-30-1.png)
 
 **Nível do filo**
 
@@ -722,7 +735,7 @@ full_table_taxa %>%
   theme(legend.position = "top")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-31-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-32-1.png)
 
 **Questão:** Será que a níveis mais baixos há diferenças?
 
@@ -751,7 +764,7 @@ full_table_taxa %>%
   theme(legend.position = "top")
 ```
 
-![](sgm_6_files/figure-markdown_github/unnamed-chunk-32-1.png)
+![](sgm_6_files/figure-markdown_github/unnamed-chunk-33-1.png)
 
 # Análise das mock communities
 
